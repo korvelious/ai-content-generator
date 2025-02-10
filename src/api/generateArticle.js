@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   const { niche } = req.body;
 
@@ -19,7 +18,14 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await response.json();
+    const text = await response.text();  // Read response as plain text
+    console.log("Raw API Response:", text);  // Log the raw response
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const data = JSON.parse(text);  // Parse JSON after logging
     res.status(200).json({ article: data.choices[0].message.content });
   } catch (error) {
     console.error("Error:", error);
